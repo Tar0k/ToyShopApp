@@ -1,4 +1,5 @@
-﻿using ToyShopApp;
+﻿using System.Text.Json;
+using ToyShopApp;
 
 var toyShop = new ToyShop();
 
@@ -98,8 +99,9 @@ while (true)
                 Console.WriteLine("Нет игрушек в очереди на выдачу");
                 break;
             }
-
             Console.WriteLine($"Забрана игрушка: {toy.Name} c id {toy.Id}");
+            var text = $"Id: {toy.Id}, Name: {toy.Name}";
+            using (var file = new StreamWriter("Awards.txt", true)) file.WriteLine(text);
             break;
         case "awaitingtoys":
             Console.WriteLine(toyShop.Victorina.AwaitingPickupToys);
