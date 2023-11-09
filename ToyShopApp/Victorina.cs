@@ -5,7 +5,7 @@ public class Victorina(Stock stock)
     private readonly Dictionary<string, int> _dropRateData = new();
     private readonly Queue<Toy> _awaitingPickupToys = new();
     private readonly Random _random = new Random();
-
+    
     public string AwaitingPickupToys => string.Join("\n", _awaitingPickupToys);
 
     public string DropRateData

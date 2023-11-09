@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using ToyShopApp;
+﻿using ToyShopApp;
 
 var toyShop = new ToyShop();
 
@@ -11,6 +10,7 @@ while (true)
     if (string.IsNullOrEmpty(command)) continue;
     switch (command.ToLower())
     {
+        // добавление на склад игрушки
         case "add":
             while (true)
             {
@@ -39,6 +39,7 @@ while (true)
                 break;
             }
             break;
+        // Розыгрыш
         case "play":
             try
             {
@@ -51,6 +52,7 @@ while (true)
             }
             break;
         
+        // Установка шанса выпадения игрушки (наличие на складе не обязательно)
         case "setdroprate":
             while (true)
             {
@@ -86,9 +88,13 @@ while (true)
                 break;
             }
             break;
+        
+        // Вывод текущих шансов выпадения игрушек
         case "droprate":
             Console.WriteLine(toyShop.Victorina.DropRateData);
             break;
+        
+        // Вывод содержимого склада
         case "stock":
             Console.WriteLine(toyShop.Stock);
             break;
@@ -103,12 +109,18 @@ while (true)
             var text = $"Id: {toy.Id}, Name: {toy.Name}";
             using (var file = new StreamWriter("Awards.txt", true)) file.WriteLine(text);
             break;
+        
+        // Вывод игружек, ожидующих выдачу
         case "awaitingtoys":
             Console.WriteLine(toyShop.Victorina.AwaitingPickupToys);
             break;
+        
+        // Вывод доступных команд
         case "help":
             Console.WriteLine("Команды : Add, SetDropRate, DropRate, Stock, Pickup, AwaitingToys, Help");
             break;
+        
+        // Выход
         case "exit":
             return;
         default:
