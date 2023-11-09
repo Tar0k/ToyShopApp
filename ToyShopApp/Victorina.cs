@@ -19,22 +19,23 @@ public class Victorina(Stock stock)
     
     public void SetDropRate(string name, int dropRate) => _dropRateData[name] = dropRate;
     
-    public void Play()
+    public Toy Play()
     {
         var toy = SelectAwardToy();
-        if (toy == null) throw new InvalidOperationException("На складе пусто.");
         AddToAwaitingPickup(toy);
+        return toy;
     }
     
     
     private Toy? SelectAwardToy()
     {
-        if (stock.Count == 0) return null;
+        if (stock.Count == 0) throw new InvalidOperationException("На складе пусто");
         var availableToys = stock.AvailableToys;
         
         // Берем шансы только для тех игрушек, которые есть на складе
-        var availableDrops = _dropRateData.Where(r => availableToys.Contains(r.Key));
-        
+        var availableDrops = _dropRateData.Where(r => availableToys.Contains(r.Key)).ToList();
+        if (availableDrops.Count == 0) throw new InvalidOperationException("Не указаны шансы выпадения для игрушек на складе");
+
         // Создаем список имен игрушек в соотствии с шансом выпадения
         List<string> choiceList = new();
         foreach (var (name, dropRate) in availableDrops)

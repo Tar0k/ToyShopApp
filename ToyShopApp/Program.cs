@@ -2,10 +2,10 @@
 
 var toyShop = new ToyShop();
 
-Console.WriteLine("Команды : Add, SetDropRate, DropRate, Stock, Pickup, AwaitingToys, Help");
+Console.WriteLine("Команды : Add, Play, SetDropRate, DropRate, Stock, Pickup, AwaitingToys, Help, Exit");
 while (true)
 {
-    Console.WriteLine("Введите команду");
+    Console.Write("Введите команду: ");
     var command = Console.ReadLine();
     if (string.IsNullOrEmpty(command)) continue;
     switch (command.ToLower())
@@ -15,21 +15,75 @@ while (true)
             {
                 Console.Write("Введите название игрушки: ");
                 var name = Console.ReadLine();
-                if (string.IsNullOrEmpty(name)) continue;
-                
+                if (string.IsNullOrEmpty(name))
+                {
+                    Console.WriteLine("Не введено имя");
+                    continue;
+                }
+
                 Console.Write("Введите количество если нужно: ");
                 var quantityStr = Console.ReadLine();
                 if (!string.IsNullOrEmpty(quantityStr))
                 {
-                    if (!int.TryParse(quantityStr, out var quantity)) continue;
+                    if (!int.TryParse(quantityStr, out var quantity))
+                    {
+                        Console.WriteLine("Не корректный формат ввода");
+                        continue;
+                    }
                     toyShop.Stock.Add(name, quantity);
                     break;
                 }
+
                 toyShop.Stock.Add(name);
                 break;
             }
             break;
+        case "play":
+            try
+            {
+                var awardToy = toyShop.Victorina.Play();
+                Console.WriteLine($"Выбрана награда: {awardToy.Name} с id {awardToy.Id}");
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            break;
+        
         case "setdroprate":
+            while (true)
+            {
+                Console.Write("Введите название игрушки: ");
+                var name = Console.ReadLine();
+                if (string.IsNullOrEmpty(name))
+                {
+                    Console.WriteLine("Не введено имя");
+                    continue;
+                }
+
+                Console.Write("Введите шанс выпадение (1-100): ");
+                var dropRateStr = Console.ReadLine();
+                if (string.IsNullOrEmpty(dropRateStr))
+                {
+                    Console.WriteLine("Не введено значение.");
+                    continue;
+                }
+
+                if (!int.TryParse(dropRateStr, out var dropRate))
+                {
+                    Console.WriteLine("Не корректный ввод.");
+                    continue;
+                }
+
+                if (dropRate is > 100 or < 1)
+                {
+                    Console.WriteLine("Значение вне допустимого диапазона");
+                    continue;
+                }
+
+                toyShop.Victorina.SetDropRate(name, dropRate);
+                break;
+            }
             break;
         case "droprate":
             Console.WriteLine(toyShop.Victorina.DropRateData);
@@ -38,6 +92,14 @@ while (true)
             Console.WriteLine(toyShop.Stock);
             break;
         case "pickup":
+            var toy = toyShop.Victorina.GetAwaitingToy();
+            if (toy == null)
+            {
+                Console.WriteLine("Нет игрушек в очереди на выдачу");
+                break;
+            }
+
+            Console.WriteLine($"Забрана игрушка: {toy.Name} c id {toy.Id}");
             break;
         case "awaitingtoys":
             Console.WriteLine(toyShop.Victorina.AwaitingPickupToys);
@@ -46,37 +108,12 @@ while (true)
             Console.WriteLine("Команды : Add, SetDropRate, DropRate, Stock, Pickup, AwaitingToys, Help");
             break;
         case "exit":
-            return ;
+            return;
         default:
             Console.WriteLine("Некорректная команда");
             break;
     }
-
-
 }
 
-
-toyShop.Stock.Add("Робот", 5);
-toyShop.Stock.Add("Кукла", 8);
-toyShop.Stock.Add("Машина", 3);
-
-toyShop.Victorina.SetDropRate("Робот", 2);
-toyShop.Victorina.SetDropRate("Кукла", 4);
-toyShop.Victorina.SetDropRate("Машина", 4);
-
-toyShop.Victorina.SetDropRate("Самолет", 4);
-
-
-Console.WriteLine(toyShop.Stock);
-
-toyShop.Stock.Get("Робот");
-Console.WriteLine(toyShop.Stock);
-
-
-toyShop.Victorina.Play();
-
-Console.WriteLine(toyShop.Victorina.DropRateData);
-Console.WriteLine(toyShop.Victorina.AwaitingPickupToys);
-Console.WriteLine(toyShop.Stock);
 
 
